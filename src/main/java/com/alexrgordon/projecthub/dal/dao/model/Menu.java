@@ -11,7 +11,7 @@ import lombok.Data;
 
 @Data
 @Entity 
-@Table(name="Menus")
+@Table(name="project_hub_db.Menus")
 public class Menu {
 
     @Id

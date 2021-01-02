@@ -11,7 +11,7 @@ import lombok.Data;
 
 @Data
 @Entity 
-@Table(name="Lists")
+@Table(name="project_hub_db.Lists")
 public class ListModel {
 
     @Id

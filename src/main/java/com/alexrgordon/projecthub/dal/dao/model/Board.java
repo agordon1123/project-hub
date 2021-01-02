@@ -13,7 +13,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name="Boards")
+@Table(name="project_hub_db.Boards")
 public class Board {
 
     @Id

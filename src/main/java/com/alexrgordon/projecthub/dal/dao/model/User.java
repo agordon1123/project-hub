@@ -14,7 +14,7 @@ import lombok.Data;
 // creating a base user class for development purposes until auth layer set up
 @Data
 @Entity 
-@Table(name="Users")
+@Table(name="project_hub_db.Users")
 public class User {
 
     @Id

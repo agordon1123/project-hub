@@ -14,7 +14,7 @@ import lombok.Data;
 
 @Data
 @Entity 
-@Table(name="Cards")
+@Table(name="project_hub_db.Cards")
 public class Card {
 
     @Id
