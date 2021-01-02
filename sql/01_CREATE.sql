@@ -41,3 +41,11 @@ CREATE TABLE project_hub_db.`Users` (
     `Username` varchar(32) NOT NULL,
     PRIMARY KEY (`Id`)
 );
+
+DROP TABLE IF EXISTS project_hub_db.`UserBoards`;
+CREATE TABLE project_hub_db.`UserBoards` (
+    `Id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `UserId` int(10) unsigned NOT NULL,
+    `BoardId` in(10) unsigned NOT NULL,
+    PRIMARY KEY (`Id`)
+);

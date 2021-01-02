@@ -9,6 +9,5 @@ public class ListModel {
 
     private String name;
     private int sortOrder;
-    // private List<Card> cards;
 
 }

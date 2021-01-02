@@ -10,17 +10,13 @@ public class Board {
 
     public Board() { }
 
+    private Integer id;
     private String name;
-    private List<String> users;
-    private List<String> lists;
-    // todo: build out sub classes for lists, users, etc
-    // @ToString.Exclude
 
     public static Board toBoard(com.alexrgordon.projecthub.dal.dao.model.Board board) {
         Board mapped = new Board();
+        mapped.setId(board.getId());
         mapped.setName(board.getName());
-        mapped.setUsers(board.getUsers());
-        mapped.setLists(board.getLists());
         return mapped;
     }
 

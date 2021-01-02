@@ -1,4 +1,4 @@
-package com.alexrgordon.projecthub.dal.dao.model;
+package com.alexrgordon.projecthub.api.model;
 
 import lombok.Data;
 

@@ -1,6 +1,6 @@
 package com.alexrgordon.projecthub.api.model;
 
-import java.util.DateTime;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Data;
@@ -13,9 +13,7 @@ public class Card {
 
     private String title;
     private String description;
-    private DateTime dueDate;
-    private DateTime createdDate;
-    // private List<Comment> comments;
-    // private List<Activity> activity;
+    private Date dueDate;
+    private Date createdDate;
 
 }

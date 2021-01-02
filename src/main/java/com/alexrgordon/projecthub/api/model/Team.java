@@ -10,6 +10,5 @@ public class Team {
     public Team() { }
 
     private String name;
-    // private List<User> users;
 
 }
