@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.alexrgordon.projecthub.dal.dao.model.User;
 
-@Repository("userRepository")
-public interface UserRepository extends CrudRepository<User, User> {
+@Repository("userRepository")                      // <  T ,    ID  >
+public interface UserRepository extends CrudRepository<User, Integer> {
 
 }

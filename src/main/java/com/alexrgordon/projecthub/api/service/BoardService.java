@@ -2,19 +2,26 @@ package com.alexrgordon.projecthub.api.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import javax.sql.DataSource;
+import javax.persistence.EntityNotFoundException;
 import javax.validation.ValidationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.alexrgordon.projecthub.api.model.Board;
 import com.alexrgordon.projecthub.api.model.User;
 import com.alexrgordon.projecthub.dal.repository.BoardRepository;
 import com.alexrgordon.projecthub.dal.repository.UserRepository;
 
+@Service
 public class BoardService {
 
+    @Autowired 
+    private DataSource dataSource;
+    
     @Autowired
     private BoardRepository boardRepository;
 
@@ -23,30 +30,41 @@ public class BoardService {
 
     public BoardService() { }
 
-    public Board createBoard(Board board, User user) {
+    public Board createBoard(Board board, Integer userId) {
+        // validate request params
+        // todo: validate user does not already have that board name
         if (board.getName() == null || board.getName().trim().isEmpty()) {
             throw new ValidationException("Parameter Board.name is missing or empty.");
         }
-        if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
-            throw new ValidationException("Parameter User.username is missing or empty.");
+        if (userId == null) {
+            throw new ValidationException("Parameter userId cannot be null.");
         }
-        // map to domain obj
+        if (!userRepository.existsById(userId)) {
+            throw new EntityNotFoundException("User with Id " + userId + " was not found.");
+        }
+        
+        // map to domain class and save to jpa repository
         com.alexrgordon.projecthub.dal.dao.model.Board domainBoard = 
                 com.alexrgordon.projecthub.dal.dao.model.Board.toBoard(board);
-        // save to repository
         boardRepository.save(domainBoard);
 
-        // add board to joining table
-        // create sql connection 
-        // execute query
-        final int boardId = domainBoard.getId();
-        // final int userId = userRepository.find_UserByUsername(user.getUsername());
-        final String query = "INSERT INTO project_hub_db.UserBoards (UserId, BoardId) VALUES (?, ?);";
-        DataSource ds = null;
-        // Connection c = ds.getConnection();
-        // c.
+        // add new board to joining table with user
+        try {
+            final Connection conn = dataSource.getConnection();
+            final int boardId = domainBoard.getId();
+            final String query = "INSERT INTO project_hub_db.UserBoards (UserId, BoardId) VALUES (?, ?);";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, boardId);
+            preparedStatement.execute();
+            conn.close();
 
-        // map back to api model
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            // throw e;
+        }
+
+        // map new board back to api model class
         Board mappedBoard = Board.toBoard(domainBoard);
         return mappedBoard;
     }
