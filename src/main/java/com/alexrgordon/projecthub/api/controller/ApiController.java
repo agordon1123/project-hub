@@ -1,5 +1,7 @@
 package com.alexrgordon.projecthub.api.controller;
 
+import java.util.List;
+
 import java.sql.SQLException;
 
 import javax.persistence.EntityNotFoundException;
@@ -34,7 +36,6 @@ class ApiController {
 
     @RequestMapping(path="/api/board", method=RequestMethod.POST)
     public ResponseEntity<Object> createBoard(@RequestBody Board board, @RequestParam Integer userId) {
-
         try {
             Board createdBoard = boardService.createBoard(board, userId);
             return new ResponseEntity<>(createdBoard, HttpStatus.CREATED);
@@ -54,18 +55,63 @@ class ApiController {
     }
 
     @RequestMapping(path="/api/board", method=RequestMethod.GET)
-    public void getBoardsByUser(String username) {
-        //
+    public ResponseEntity<Object> getBoardsByUserId(@RequestParam Integer userId) {
+        try {
+            List<Board> userBoards = boardService.getBoardsByUserId(userId);
+            return new ResponseEntity<>(userBoards, HttpStatus.OK);
+
+        } catch (ValidationException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Internal server error.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping(path="/api/board", method=RequestMethod.PUT)
-    public void updateBoard(@RequestBody Board card) {
-        //
+    public void updateBoard(@RequestBody Board board) {
+        try {
+            Board updatedBoard = boardService.updateBoard(board);
+            return new ResponseEntity<>(updatedBoard, HttpStatus.OK);
+
+        } catch (ValidationException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Internal server error.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping(path="/api/board", method=RequestMethod.DELETE)
-    public void deleteBoard(int boardId) {
-        //
+    public void deleteBoard(@RequestParam Integer boardId) {
+        try {
+            boardService.deleteBoardById(boardId);
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } catch (ValidationException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Internal server error.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping(path="/api/card", method=RequestMethod.POST)

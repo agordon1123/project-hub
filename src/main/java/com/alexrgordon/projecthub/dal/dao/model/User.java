@@ -7,9 +7,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import java.util.List;
+
 import lombok.Data;
+
+import com.alexrgordon.projecthub.dal.dao.model.Board;
 
 // creating a base user class for development purposes until auth layer set up
 @Data
@@ -18,7 +25,7 @@ import lombok.Data;
 public class User {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="Id")
     private int id;
 
@@ -31,7 +38,19 @@ public class User {
     @Column(name="Username")
     private String username;
 
-    // private List<Board> boards;
+    @JoinTable(
+        name = "UserBoards",
+        joinColumns = @JoinColumn(
+            name = "UserId",
+            referencedColumnName = "Id"
+        ),
+        inverseJoinColumns = @JoinColumn(
+            name = "BoardId",
+            referencedColumnName = "Id"
+        )
+    )
+    @OneToMany
+    private List<Board> boards;
 
     public User() { }
 

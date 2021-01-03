@@ -1,5 +1,8 @@
 package com.alexrgordon.projecthub.api.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -67,6 +70,62 @@ public class BoardService {
         // map new board back to api model class
         Board mappedBoard = Board.toBoard(domainBoard);
         return mappedBoard;
+    }
+
+    public List<Board> getBoardsByUserId(Integer userId) {
+        // validate request params
+        if (userId == null) {
+            throw new ValidationException("Parameter userId cannot be null");
+        }
+        if (!userRepository.existsById(userId)) {
+            throw new EntityNotFoundException("User with Id " + userId + " was not found.");
+        }
+
+        // query user from repository and get list of boards
+        com.alexrgordon.projecthub.dal.dao.model.User user = userRepository.findById(userId).get();
+        List<com.alexrgordon.projecthub.dal.dao.model.Board> userBoards = user.getBoards();
+        // loop through boards, convert to api model class, collect and return
+        List<Board> boards = new ArrayList<>();
+        for (com.alexrgordon.projecthub.dal.dao.model.Board board : userBoards) {
+            Board mapped = Board.toBoard(board);
+            boards.add(mapped);
+        }
+        return boards;
+    }
+
+    // todo: test that id does not get changed with mappings 
+    public Board updateBoard(Board board) {
+        // validate request params
+        if (board.getName() == null || board.getName().trim().isEmpty()) {
+            throw new ValidationException("Parameter Board.name is missing or empty.");
+        }
+        Integer boardId = board.getId();
+        if (boardId == null || boardId < 0) {
+            throw new ValidationException("Parameter Board.id is missing or invalid.");
+        }
+        if (!boardRepository.existsById(boardId)) {
+            throw new EntityNotFoundException("Board with Id " + boardId + " was not found.");
+        }
+
+        // map new board to domain class and save to repository
+        com.alexrgordon.projecthub.dal.dao.model.Board domainBoard 
+                = com.alexrgordon.projecthub.dal.dao.model.Board.toBoard(board);
+        boardRepository.save(domainBoard);
+
+        // map updated board back to api model class and return
+        return Board.toBoard(domainBoard);
+    }
+
+    // todo: test cascading on delete
+    public void deleteBoardById(Integer boardId) {
+        if (boardId == null || boardId < 0) {
+            throw new ValidationException("Parameter boardId is missing or invalid.");
+        }
+        if (!boardRepository.existsById(boardId)) {
+            throw new EntityNotFoundException("Board with Id " + boardId + " was not found.");
+        }
+
+        boardRepository.deleteById(boardId);
     }
     
 }

@@ -12,6 +12,7 @@ CREATE TABLE project_hub_db.`Boards` (
 DROP TABLE IF EXISTS project_hub_db.`Cards`;
 CREATE TABLE project_hub_db.`Cards` (
     `Id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `BoardId` int(10) unsigned NOT NULL,
     `Title` varchar(100) NOT NULL,
     `Description` varchar(100) DEFAULT NULL,
     `DueDate` DATETIME DEFAULT NULL,

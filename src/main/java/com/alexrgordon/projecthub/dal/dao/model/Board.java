@@ -17,7 +17,7 @@ import lombok.Data;
 public class Board {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="Id")
     private int id;
 
