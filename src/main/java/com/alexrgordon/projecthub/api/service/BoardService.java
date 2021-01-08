@@ -2,7 +2,7 @@ package com.alexrgordon.projecthub.api.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Optional;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,9 +13,11 @@ import javax.validation.ValidationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alexrgordon.projecthub.api.model.Board;
 import com.alexrgordon.projecthub.api.model.User;
+import com.alexrgordon.projecthub.dal.dao.model.ListModel;
 import com.alexrgordon.projecthub.dal.repository.BoardRepository;
 import com.alexrgordon.projecthub.dal.repository.UserRepository;
 
@@ -47,9 +49,9 @@ public class BoardService {
         }
         
         // map to domain class and save to jpa repository
-        com.alexrgordon.projecthub.dal.dao.model.Board domainBoard = 
-                com.alexrgordon.projecthub.dal.dao.model.Board.toBoard(board);
-        boardRepository.save(domainBoard);
+        com.alexrgordon.projecthub.dal.dao.model.Board domainBoard 
+                = com.alexrgordon.projecthub.dal.dao.model.Board.toBoard(board);
+        domainBoard = boardRepository.save(domainBoard);
 
         // add new board to joining table with user
         try {
@@ -84,6 +86,7 @@ public class BoardService {
         // query user from repository and get list of boards
         com.alexrgordon.projecthub.dal.dao.model.User user = userRepository.findById(userId).get();
         List<com.alexrgordon.projecthub.dal.dao.model.Board> userBoards = user.getBoards();
+        
         // loop through boards, convert to api model class, collect and return
         List<Board> boards = new ArrayList<>();
         for (com.alexrgordon.projecthub.dal.dao.model.Board board : userBoards) {
@@ -96,10 +99,10 @@ public class BoardService {
     // todo: test that id does not get changed with mappings 
     public Board updateBoard(Board board) {
         // validate request params
+        Integer boardId = board.getId();
         if (board.getName() == null || board.getName().trim().isEmpty()) {
             throw new ValidationException("Parameter Board.name is missing or empty.");
         }
-        Integer boardId = board.getId();
         if (boardId == null || boardId < 0) {
             throw new ValidationException("Parameter Board.id is missing or invalid.");
         }
@@ -126,6 +129,20 @@ public class BoardService {
         }
 
         boardRepository.deleteById(boardId);
+    }
+
+    public void testJpaRelations(Integer userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new EntityNotFoundException("User with Id " + userId + " was not found.");
+        }
+        com.alexrgordon.projecthub.dal.dao.model.User user = userRepository.findById(userId).get();
+        System.out.println(">>> user.username: " + user.getUsername());
+        System.out.println(">>> user.boards.size: " + user.getBoards().size());
+        System.out.println(">>> user.board[0]: " + user.getBoards().get(0));
+        System.out.println(">>> user.board[0].lists: " + user.getBoards().get(0).getLists());
+        System.out.println(">>> user.board[0].lists.size: " + user.getBoards().get(0).getLists().size());
+        System.out.println(">>> user.boards[0].lists[0].cards.size: " + user.getBoards().get(0).getLists().get(0).getCards().size());
+        System.out.println(">>> user.boards[0].lists[0].cards[0].title: " + user.getBoards().get(0).getLists().get(0).getCards().get(0).getTitle());
     }
     
 }
