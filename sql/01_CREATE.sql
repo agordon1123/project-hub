@@ -12,7 +12,7 @@ CREATE TABLE project_hub_db.`Boards` (
 DROP TABLE IF EXISTS project_hub_db.`Cards`;
 CREATE TABLE project_hub_db.`Cards` (
     `Id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `BoardId` int(10) unsigned NOT NULL,
+    `ListId` int(10) unsigned NOT NULL,
     `Title` varchar(100) NOT NULL,
     `Description` varchar(100) DEFAULT NULL,
     `DueDate` DATETIME DEFAULT NULL,
@@ -23,6 +23,8 @@ CREATE TABLE project_hub_db.`Cards` (
 DROP TABLE IF EXISTS project_hub_db.`Lists`;
 CREATE TABLE project_hub_db.`Lists` (
     `Id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `BoardId` int(10) unsigned NOT NULL,
+    `Name` varchar(64) NOT NULL,
     `SortOrder` int(10) unsigned NOT NULL,
     PRIMARY KEY (`Id`)
 );

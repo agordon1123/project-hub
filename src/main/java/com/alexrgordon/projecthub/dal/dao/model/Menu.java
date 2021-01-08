@@ -22,10 +22,29 @@ public class Menu {
     @Column(name="BackgroundColor")
     private String backgroundColor;
 
+    // @JoinColumn(name="BoardId")
+    // @OneToOne 
+    // private Board board;
+
     public Menu() { }
 
+    // CREATE 
+    public static Menu toMenu(com.alexrgordon.projecthub.api.model.Menu menu, Integer boardId) {
+        Menu mapped = new Menu();
+        // Board boardFK = new Board();
+        // boardFK.setId(boardId);
+        // mapped.setBoard(boardFK);
+        mapped.setBackgroundColor(menu.getBackgroundColor());
+        return mapped;
+    }
+
+    // UPDATE
     public static Menu toMenu(com.alexrgordon.projecthub.api.model.Menu menu) {
         Menu mapped = new Menu();
+        // Board boardFK = new Board();
+        // boardFK.setId(menu.getBoard().getId());
+        // mapped.setBoard(boardFK);
+        mapped.setId(menu.getId());
         mapped.setBackgroundColor(menu.getBackgroundColor());
         return mapped;
     }

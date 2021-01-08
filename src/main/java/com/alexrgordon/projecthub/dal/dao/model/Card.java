@@ -8,9 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Entity 
@@ -21,6 +24,11 @@ public class Card {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="Id")
     private int id;
+    
+    @ManyToOne
+    @ToString.Exclude
+    @JoinColumn(name="ListId")
+    private ListModel list;
 
     @Column(name="Title")
     private String title;
@@ -31,7 +39,7 @@ public class Card {
     @Column(name="DueDate")
     private Date dueDate;
 
-    @Column(name="CreateDate")
+    @Column(name="CreatedDate")
     private Date createdDate;
 
     // private User assignedTo;
@@ -40,8 +48,23 @@ public class Card {
 
     public Card () { }
 
+    // CREATE 
+    public static Card toCard(com.alexrgordon.projecthub.api.model.Card card, Integer listId) {
+        Card mapped = new Card();
+        ListModel listFK = new ListModel();
+        listFK.setId(listId);
+        mapped.setList(listFK);
+        mapped.setTitle(card.getTitle());
+        mapped.setDescription(card.getDescription());
+        mapped.setDueDate(card.getDueDate());
+        mapped.setCreatedDate(card.getCreatedDate());
+        return mapped;
+    }
+
+    // UPDATE
     public static Card toCard(com.alexrgordon.projecthub.api.model.Card card) {
         Card mapped = new Card();
+        mapped.setId(card.getId());
         mapped.setTitle(card.getTitle());
         mapped.setDescription(card.getDescription());
         mapped.setDueDate(card.getDueDate());

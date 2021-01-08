@@ -12,9 +12,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import java.util.List;
-
 import lombok.Data;
+import lombok.ToString;
 
 import com.alexrgordon.projecthub.dal.dao.model.Board;
 
@@ -50,12 +49,17 @@ public class User {
         )
     )
     @OneToMany
+    @ToString.Exclude
     private List<Board> boards;
 
     public User() { }
 
+    // CREATE 
     private static User toUser(com.alexrgordon.projecthub.api.model.User user) {
         User mapped = new User();
+        if (user.getId() != null) { // UPDATE
+            mapped.setId(user.getId());
+        }
         mapped.setFirstName(user.getFirstName());
         mapped.setLastName(user.getLastName());
         mapped.setUsername(user.getUsername());

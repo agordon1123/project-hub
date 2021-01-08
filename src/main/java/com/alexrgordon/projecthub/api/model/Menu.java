@@ -7,6 +7,7 @@ public class Menu {
 
     public Menu() { }
 
+    private Integer id;
     private String backgroundColor;
 
 }
